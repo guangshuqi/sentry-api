@@ -110,6 +110,11 @@ def bootstrap_config():
         print(f"   Please manually visit: {token_url}")
 
     print("\n" + "-"*80)
+    print("\n⚠️  AGENT INSTRUCTION: If running non-interactively, run this command")
+    print("    in a tmux session to enable interactive input:")
+    print(f"    tmux new-session -d -s sentry_setup 'uv run {' '.join(sys.argv)}'")
+    print("    tmux send-keys -t sentry_setup '<paste-auth-token>' C-m")
+    print("-"*80)
 
     # Prompt for auth token
     while True:

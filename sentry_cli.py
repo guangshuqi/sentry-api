@@ -87,49 +87,53 @@ def save_config(auth_token: str, org_slug: str):
 
 
 def bootstrap_config():
-    """Interactive bootstrap flow to set up configuration"""
+    """Bootstrap flow that provides instructions for LLM agent to complete setup"""
     print("\n" + "="*80)
     print("🚀 Sentry CLI Bootstrap")
     print("="*80)
     print("\nThis is your first time running the Sentry CLI.")
-    print("Let's set up your authentication token.\n")
+    print("Configuration file not found.\n")
 
     # Open browser to token creation page
     token_url = "https://square-inc.sentry.io/settings/account/api/auth-tokens/new-token"
-    print(f"📱 Opening browser to create a new Sentry auth token...")
+    print(f"📱 Opening Chrome to create a new Sentry auth token...")
     print(f"   URL: {token_url}\n")
 
     try:
-        webbrowser.open(token_url)
-        print("✅ Browser opened. Please create a new token with these scopes:")
-        print("   - org:read")
-        print("   - project:read")
-        print("   - event:read")
+        # Try to open with Chrome specifically
+        import platform
+        if platform.system() == "Darwin":  # macOS
+            subprocess.run(["open", "-a", "Google Chrome", token_url], check=False)
+        else:
+            webbrowser.open(token_url)
+        print("✅ Browser opened to Sentry token creation page.")
     except Exception as e:
         print(f"⚠️  Failed to open browser: {e}")
         print(f"   Please manually visit: {token_url}")
 
     print("\n" + "-"*80)
-    print("\n⚠️  AGENT INSTRUCTION: If running non-interactively, run this command")
-    print("    in a tmux session to enable interactive input:")
-    print(f"    tmux new-session -d -s sentry_setup 'uv run {' '.join(sys.argv)}'")
-    print("    tmux send-keys -t sentry_setup '<paste-auth-token>' C-m")
+    print("⚠️  LLM AGENT INSTRUCTIONS:")
     print("-"*80)
-
-    # Prompt for auth token
-    while True:
-        auth_token = input("\nPaste your Sentry auth token: ").strip()
-        if auth_token:
-            break
-        print("❌ Auth token cannot be empty. Please try again.")
-
-    # Save configuration
-    print(f"\nUsing organization: {ORG_SLUG}")
-    save_config(auth_token, ORG_SLUG)
-
-    print("\n" + "="*80)
-    print("✅ Bootstrap complete! You can now use the Sentry CLI.")
-    print("="*80 + "\n")
+    print("\n1. A Chrome browser has been opened to the Sentry token creation page.")
+    print("   The user needs to create a new token with these scopes:")
+    print("   - org:read")
+    print("   - project:read")
+    print("   - event:read")
+    print("\n2. Ask the user to paste their newly created Sentry auth token.")
+    print("\n3. Once you receive the token, create the configuration file at:")
+    print(f"   {CONFIG_FILE}")
+    print("\n4. The config file must use this exact JSON format:")
+    print('   {')
+    print('     "auth_token": "<user-provided-token>",')
+    print(f'     "org_slug": "{ORG_SLUG}"')
+    print('   }')
+    print("\n5. Set file permissions to owner read/write only (0o600 in Python):")
+    print(f"   chmod 600 {CONFIG_FILE}")
+    print("\n6. After creating the config file, rerun the original command:")
+    print(f"   {' '.join(sys.argv)}")
+    print("-"*80)
+    print("\n❌ Bootstrap incomplete. Waiting for agent to complete setup.\n")
+    sys.exit(1)
 
 
 def ensure_configured() -> Dict[str, str]:

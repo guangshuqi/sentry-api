@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /Users/jqi/scripts/sentry-api remote:*)",
+      "Bash(chmod:*)",
+      "Bash(uv run:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nAdd self-contained Sentry CLI with bootstrap mode\n\n- Created sentry_cli.py as standalone uv script with inline dependencies\n- Added bootstrap flow that checks for config at ~/.sentry-script/config.json\n- Bootstrap opens browser to Sentry token creation page and prompts for input\n- All CLI commands gated behind bootstrap check\n- Hardcoded org-slug to \"square-inc\"\n- Script can be run directly from GitHub with: uv run https://github.com/...\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

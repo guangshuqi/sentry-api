@@ -400,11 +400,11 @@ def cmd_fetch_issues(args, client: SentryClient):
     if args.start_at:
         # Convert to ISO format for Sentry
         start_dt = datetime.fromisoformat(args.start_at)
-        query_parts.append(f"firstSeen:>{start_dt.isoformat()}Z")
+        query_parts.append(f"lastSeen:>{start_dt.isoformat()}Z")
 
     if args.end_at:
         end_dt = datetime.fromisoformat(args.end_at)
-        query_parts.append(f"firstSeen:<{end_dt.isoformat()}Z")
+        query_parts.append(f"lastSeen:<{end_dt.isoformat()}Z")
 
     # Add user query
     if args.query:
